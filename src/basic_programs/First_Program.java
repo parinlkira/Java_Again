@@ -3,9 +3,7 @@ package basic_programs;
 public class First_Program {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.print("Welcome to 3RI");
-		
+		// TODO Auto-generated method stub	
 		System.out.print("\tHello John!");
 		
 		/*  Shortcuts - 
