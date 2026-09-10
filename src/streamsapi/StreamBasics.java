@@ -9,7 +9,7 @@ public class StreamBasics {
         List<Integer> nums = Arrays.asList(10, 5, 20, 5, 30, 40, 10, 15, 2);
 
         List<String> words =  Arrays.asList("java", "spring", "aws", 
-                            "java", "kafka", "spring");
+                            "java", "kafka", "spring", "level", "madam");
 
         List<Employee> employees = Arrays.asList( 
     new Employee(1, "Alice", "IT", "Developer", 120000, 30),
@@ -212,6 +212,79 @@ public class StreamBasics {
       
       // 30. Find numbers appearing exactly once
 
-    }  
-    
+      List<Integer> numsOnce = nums.stream()
+    		  		.collect(Collectors.groupingBy(Function.identity(),
+    		  				Collectors.counting()))
+    		  		.entrySet()
+    		  		.stream()
+    		  		.filter(e -> e.getValue() == 1)
+    		  		.map(Map.Entry::getKey)
+    		  		.toList();
+      System.out.println("Finding numbers appearing exactly once: " + numsOnce);
+     
+     // 31. Count frequency of each number
+      
+     Map<Integer, Long> freqEach = nums.stream()
+    		 .collect(Collectors.groupingBy(Function.identity(),
+    				 Collectors.counting()));
+    		 
+     System.out.println("Count frequency of each number: " + freqEach);		 
+      
+     //32. Count frequency of each word
+      
+     Map<String, Long> freqWord = words.stream()
+    		 	.collect(Collectors.groupingBy(
+    		 			Function.identity(), Collectors.counting()));
+    		 	
+     System.out.println("Count frequency of each word: " + freqWord);
+      
+     //33. Find duplicate words 
+     
+     Set<String> dupWords = words.stream()
+    		 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+    		 .entrySet()
+    		 .stream()
+    		 .filter( m -> m.getValue() > 1)
+    		 .map(Map.Entry::getKey)
+    		 .collect(Collectors.toSet());
+    		 
+     System.out.println("Find duplicate words: " + dupWords);
+     
+     // One more easier way 
+     
+     Set<String> seen1 = new HashSet<>();
+     
+     Set<String> dupWords1 = words.stream()
+    		 		.filter( m -> !seen1.add(m))
+    		 		.collect(Collectors.toSet());
+     
+     System.out.println("Find duplicate words(Easier): " + dupWords1);
+     
+     // 34. Reverse each word
+     
+     List<String> rev = Arrays.asList("aws", "java").stream()
+    		 .map(s -> new StringBuilder(s).reverse().toString())
+    		 .toList();
+     
+     System.out.println("Reverse words: " + rev);
+     
+     // 35. Find palindrome words
+     
+     List<String> palin = words.stream()
+    		 .filter( s -> s.equals(new StringBuilder(s).reverse().toString()))
+    		 .toList();
+     
+     System.out.println("Palindrome words: " + palin);
+     
+     
+     // 36. Convert List<Integer> to comma-separated String
+     
+     String comSep = nums.stream()
+    		 .map(String::valueOf)
+    		 .collect(Collectors.joining(", "));
+     
+     System.out.println("Nums to comma separated String: " + comSep);
+     
+      // Method Ends here
+    }     
 }
