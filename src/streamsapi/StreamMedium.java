@@ -1,6 +1,7 @@
 package streamsapi;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class StreamMedium {
@@ -210,14 +211,163 @@ public class StreamMedium {
      } );
      
      
-    		  
-    		  
-    		  
-    		  
-    		  
-    		  
-    		  
+     // 54. Lowest-paid employee in each department
       
+     Map<String, Optional<Employee>> lowEmpPerDep = employees.stream()
+    		 .collect(Collectors.groupingBy(
+    				 Employee::getDepartment,
+    				 Collectors.minBy(
+    						Comparator.comparing(Employee::getSalary)
+    						 )
+    				 ));
+   
+     lowEmpPerDep.forEach((dept, empList) ->{
+    	 
+    	 System.out.print("Dept: " + dept + " -> {");
+    	 String name1 = empList.stream()
+    			 .map(Employee::getName)
+    			 .collect(Collectors.joining(", "));
+    	 
+    	 System.out.println(name1 + " }");
+     } );
+    		  
+     // 55. Employee names grouped by department
+     
+     Map<String, List<String>> empNamePerDept = employees.stream()
+    		 .collect(Collectors.groupingBy(
+      				Employee::getDepartment,
+    				Collectors.mapping(Employee::getName, Collectors.toList()) 
+    				 ));
+     
+    System.out.println("Employee names grouped by department: " + empNamePerDept );	  
+    
+    // 56. Partition employees by salary > 100000
+    		  
+    Map<Boolean, List<Employee>> partBySal = employees.stream()
+    					.collect(Collectors.partitioningBy(
+    							e -> e.getSalary() > 100000
+    							));
+    
+    System.out.println("Partition employees by salary > 100000: " + partBySal );
+    
+    // 57. Count employees by salary > 100000
+    
+    Map<Boolean, Long> countEmpGThanSal = employees.stream()
+    		.collect(Collectors.partitioningBy(
+    				e -> e.getSalary() > 100000,
+    				Collectors.counting()
+    				));
+    System.out.println("Count employees by salary > 100000: " + countEmpGThanSal);
+    
+    
+    // 58. Find department with highest average salary
+    
+    String DeptWithHighAvgSal = employees.stream()
+    		.collect(Collectors.groupingBy(
+    				Employee::getDepartment,
+    				Collectors.averagingDouble(Employee::getSalary)
+    				))
+    		.entrySet()
+    		.stream()
+    		//.peek(e -> System.out.println("Peeking Data: " + e))
+    	// Peek is not part of the solution, its just for our data visualisation
+    	// purposes and also to see how peek can be invoked as intermediate operation
+    		.max(Map.Entry.comparingByValue())
+    		.map(Map.Entry::getKey)
+    		.orElse("Nothing is found");
+    				
+    System.out.println("Dept With Highest Avg Sal: " + DeptWithHighAvgSal);
+    		
+    // 59. Find department with highest total salary		
+    		
+    String DeptWithHighTotSal = employees.stream()
+    		.collect(Collectors.groupingBy(
+    				Employee::getDepartment,
+    				Collectors.summingDouble(Employee::getSalary)
+    				))
+    		.entrySet()
+    		.stream()
+    		.max(Map.Entry.comparingByValue())
+    		.map(Map.Entry::getKey)
+    		.orElse("None Found");
+   
+    System.out.println("Dept With Highest Tot Sal: " + DeptWithHighTotSal);
+    
+    
+    // 60. Find departments having more than 2 employees
+    
+    List<String> deptMoreThan2Emps = employees.stream()
+    		.collect(Collectors.groupingBy(
+    				Employee::getDepartment,
+    				Collectors.counting()
+    				))
+    		.entrySet()
+    		.stream()
+    		.filter( e -> e.getValue() > 2)
+    		.map(Map.Entry::getKey)
+    		.collect(Collectors.toList());
+    
+    System.out.println("departments having more than 2 employees: "
+    + deptMoreThan2Emps);
+    
+    
+    // 61. Convert employees to Map<id, employee>
+    
+    Map<Integer, Employee> idToEmp = employees.stream()
+    		.collect(Collectors.toMap(
+    				Employee::getId, 
+    				Function.identity()
+    				));
+    
+    System.out.println("Convert employees to Map<id, employee>: "
+    	    + idToEmp);
+      
+    
+    // 62. Convert employees to Map<id, name>
+    
+    Map<Integer, String> idToName = employees.stream()
+    		.collect(Collectors.toMap(
+    				Employee::getId,
+    				Employee::getName
+    				));
+   
+    System.out.println("Convert employees to Map<id, name>: "
+    	    + idToName);
+    
+    // 63. Handle duplicate keys with toMap()
+    
+    Map<String, String> deptToNameNoDups = employees.stream()
+    		.collect(Collectors.toMap(
+    				Employee::getDepartment,
+    				Employee::getName,
+    				(existing, replacement) -> existing	// This is the merging operation
+    				));
+    
+    System.out.println("Handle duplicate keys with toMap(): "
+    	    + deptToNameNoDups);
+    
+    // Bonus Teaser : Most Frequent Element in a list
+    
+    List<String> list1 = Arrays.asList("Pen", "Eraser", "Note Book", "Pen",
+    		"Pencil", "Pen", "Note Book", "Pencil");
+    
+    String mostFreq = list1.stream()
+    		.collect(Collectors.groupingBy(
+    				Function.identity(),
+    				Collectors.counting()
+    				))
+    		.entrySet()
+    		.stream()
+    		.max(Map.Entry.comparingByValue())
+    		.map(Map.Entry::getKey)
+    		.orElse("No Element Found");
+    
+    System.out.println("Most Frequent Element is : " + mostFreq);
+    		
+    		
+    		
+    		
+    
       // Method ends here
 	}
 
