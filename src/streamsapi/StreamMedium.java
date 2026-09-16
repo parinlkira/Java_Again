@@ -210,6 +210,8 @@ public class StreamMedium {
     	 
      } );
      
+     // If you just want to print name, then question 85 in StreamsHardTwo
+     // Does it in one pass and no need for forEach
      
      // 54. Lowest-paid employee in each department
       

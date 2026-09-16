@@ -8,6 +8,7 @@ public class Employee {
     String role;
     int salary;
     int age;
+    String designation;
 
     public Employee(int id, String name, String department, String role, int salary, int age) {
         this.id = id;
@@ -18,7 +19,13 @@ public class Employee {
         this.age = age;
     }
 
-        public int getId() {
+    public Employee(int id, String name, String department, String role, int salary, int age, String designation) {
+        this(id, name, department, role, salary, age);
+        this.designation = designation;
+    }
+
+        
+    public int getId() {
         return id;
     }
     public String getRole() {
@@ -38,6 +45,11 @@ public class Employee {
     public int getSalary() {
         return salary;
     }
+
+    public String getDesignation() {
+        return designation;
+    }
+
     
     @Override
     public String toString() {
@@ -48,6 +60,7 @@ public class Employee {
                 ", role='" + role + '\'' +
                 ", salary=" + salary +
                 ", age=" + age +
+                ", designation='" + designation + '\'' +
                 '}';
     }
 

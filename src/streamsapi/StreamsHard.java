@@ -23,6 +23,17 @@ public class StreamsHard {
 	    new Employee(8, "Henry", "IT", "Developer", 100000, 31)
 	        );	
 	    
+	    List<Employee> employees2 = Arrays.asList(
+	    new Employee(1, "Alice", "IT", "Developer", 120000, 30, "Developer"),
+	    new Employee(2, "Bob", "IT", "Developer", 100000, 28, "Developer"),
+	    new Employee(3, "Charlie", "HR", "Manager", 90000, 35, "Manager"),
+	    new Employee(4, "David", "IT", "Architect", 150000, 40, "Architect"),
+	    new Employee(5, "Eva", "HR", "Recruiter", 70000, 27, "Recruiter"),
+	    new Employee(6, "Frank", "Finance", "Analyst", 110000, 32, "Analyst"),
+	    new Employee(7, "Grace", "Finance", "Manager", 140000, 38, "Manager"),
+	    new Employee(8, "Henry", "IT", "Developer", 100000, 31, "Developer")
+	        );
+
 	    List<List<Integer>> nested = Arrays.asList(
 	    		Arrays.asList(1,2),
 	    		Arrays.asList(3,4),
@@ -187,7 +198,157 @@ public class StreamsHard {
 				+ "give age -> name by Method 2: "
 				+ agePerName2);			
 					
-					
+
+		// 75. Group employees by department and designation
+
+		Map<String, Map<String, List<Employee>>> deptDesigMap = employees2.stream()
+						.collect(Collectors.groupingBy(
+							Employee::getDepartment,
+							Collectors.groupingBy(Employee::getDesignation)
+						));
+		
+		deptDesigMap.forEach((dept, desigMap) -> {
+			System.out.print("Department: " + dept + " -> ");			
+			desigMap.forEach((desig, empList) -> {
+				System.out.print( desig + ", ");
+			});
+			System.out.println(); // Move to the next line after each department
+		});
+
+		
+		// 76. Count employees by department and designation
+		
+		Map<String, Map<String, Long>> countDeptDesig = employees2.stream()
+				.collect(Collectors.groupingBy(
+						Employee::getDepartment,
+						Collectors.groupingBy(
+								Employee::getDesignation,
+								Collectors.counting())
+						));
+		
+		System.out.println("Count employees by department \n"
+				+ "and designation: " + countDeptDesig);
+		
+		// 77. Find employees with names starting with A
+		
+		List<Employee> nameWithA = employees.stream()
+				.filter( a -> a.getName().startsWith("A"))
+				.toList();
+		
+		System.out.println("Name Starts with A: " + nameWithA);
+		
+		// 78. Get comma-separated employee names and enclosed by [ ]
+		
+		String comma = employees.stream()
+				.map(Employee::getName)
+				.collect(Collectors.joining(", ", "[", "]"));
+		
+		System.out.println("Comma and [] employees: " + comma);
+		
+		// 79. Find average age by department
+		
+		Map<String, Double> avgAgePerDept = employees.stream()
+				.collect(Collectors.groupingBy(
+						Employee::getDepartment,
+						Collectors.averagingInt(Employee::getAge)
+						));
+		
+		System.out.println("Average age per Dept: " + avgAgePerDept);
+		
+		
+		// 80. Find all employees earning exactly the second-highest salary
+		
+		Optional<Integer> secHigh = employees.stream()
+				.map(Employee::getSalary)
+				.distinct()
+				.sorted(Comparator.reverseOrder())
+				.skip(1)
+				.findFirst();
+		
+		System.out.println("Checking Optional Datatype: " + secHigh);
+		
+		List<String> namSec = employees.stream()
+				.filter( a -> secHigh.isPresent() && 
+						a.getSalary() == secHigh.get())
+				.map(Employee::getName)
+				.collect(Collectors.toList());
+		
+		System.out.println("all employees earning exactly the second-highest salary: "
+		+ namSec);
+		
+		
+		// 81. Find second-highest salary in each department
+		
+		Map<String, Optional<Integer>> secHighEachDept = employees.stream()
+				.collect(Collectors.groupingBy(
+					Employee::getDepartment,
+					Collectors.mapping(
+						Employee::getSalary,
+						Collectors.collectingAndThen(
+							Collectors.toList(),
+							list -> list.stream()
+							.distinct()
+							.sorted(Comparator.reverseOrder())
+							.skip(1)
+							.findFirst()
+								)
+							)
+						));
+						
+		System.out.println("second-highest salary per Department: "
+				+ secHighEachDept);
+		
+		// 82. Find employee(s) with second-highest
+		// salary in each department
+		
+		Map<String, List<Employee>> fullEmpSecHigh = employees.stream()
+				.collect(Collectors.groupingBy(Employee::getDepartment))
+				.entrySet()
+				.stream()
+				.collect(Collectors.toMap(
+					Map.Entry::getKey,
+					e -> {
+				Optional<Integer> sec = e.getValue().stream()
+						.map(Employee::getSalary)
+						.distinct()
+						.sorted(Comparator.reverseOrder())
+						.skip(1)
+						.findFirst();
+				
+				return e.getValue().stream()
+					.filter( a -> sec.isPresent() &&
+							a.getSalary() == sec.get())
+					.collect(Collectors.toList());
+			
+					}	
+						));
+		
+		
+		System.out.println("employees with full data with the "
+				+ "second-highest salary per Department: "
+				+ fullEmpSecHigh);
+		
+		
+		// 83. Find top 3 employees in each department
+		
+		Map<String, List<String>> top3PerDept = employees.stream()
+				.collect(Collectors.groupingBy(
+						Employee::getDepartment,
+						Collectors.collectingAndThen(
+				Collectors.toList(),
+				list -> list.stream()
+				.sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+				.limit(3)
+				.map(Employee::getName)
+				.collect(Collectors.toList())				
+				)
+						));
+		
+		System.out.println("top 3 salary employee names per Department: "
+				+ top3PerDept);
+		
+		
+		
 					
 		// Method Ends Here
 
