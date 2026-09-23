@@ -66,7 +66,7 @@ public class StreamMedium {
         		.map(Employee::getName)
         		.collect(Collectors.toList());
         
-    System.out.println("Sort Employees by ascending salaryand return names : "
+    System.out.println("41.Sort Employees by ascending salary and return names : "
      + namesAscSal);
         			  				
         // 42. Sort Employees by descending salary and return names
@@ -232,6 +232,22 @@ public class StreamMedium {
     	 
     	 System.out.println(name1 + " }");
      } );
+     
+     // Yet another Easier way forEach way to print the dept -> name
+     
+     System.out.println("Yet another way to print lowestpaid emp per dept \n"
+     		+ "using For Each in the format : dept -> name ");
+     
+     lowEmpPerDep.forEach((dep, emplist) -> {
+    	 System.out.println("Department: " + dep
+    			 + " -> {" + emplist.get().getName() + "}"  
+    			 );
+     });
+     
+     
+     
+     
+     
     		  
      // 55. Employee names grouped by department
      

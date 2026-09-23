@@ -4,6 +4,7 @@ package streamsapi;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StreamsHardTwo {
 
@@ -267,7 +268,60 @@ System.out.println(" 89. Find all employee names appearing more than once: " + n
   System.out.println("99. Find the second-highest employee"
   		+ " salary and all employees having it " + empNamesWithSecHiSal);
  
-		// Method Ends here
+
+	// 100. Move Zeroes to the end of the list while maintaining 
+	// the order of non-zero elements
+
+	List<Integer> numbers = Arrays.asList(1, 0, 2, 0, 3, 0, 4);
+	List<Integer> movedZeroes = Stream.concat(
+			numbers.stream().filter(n -> n != 0),
+			numbers.stream().filter(n -> n == 0)
+	).collect(Collectors.toList());
+
+	System.out.println("100. Move Zeroes to the end: " + movedZeroes);
+
+	// Another approach for the same problem using partitioningBy
+
+	Map<Boolean, List<Integer>> partitioned = numbers.stream()
+			.collect(Collectors.partitioningBy(n -> n != 0));
+
+	List<Integer> movedZeroesAlt = Stream.concat(
+			partitioned.get(true).stream(),
+			partitioned.get(false).stream()
+	).collect(Collectors.toList());
+
+	System.out.println("100. Move Zeroes to the end (Alternative): " + movedZeroesAlt);
+
+	// What if the input was array of numbers instead of a list?
+	int[] numArray = {0,0,0,0};
+	List<Integer> movedZeroesFromArray = Stream.concat(
+			Arrays.stream(numArray).boxed().filter(n -> n != 0),
+			Arrays.stream(numArray).boxed().filter(n -> n == 0)
+	).collect(Collectors.toList());
+
+	System.out.println("100. Move Zeroes to the end (from array): " + movedZeroesFromArray);
+	
+	// What if I wanted to return the output as an Array as well
+	int[] movedZeroesArray = Stream.concat(
+			Arrays.stream(numArray).boxed().filter(n -> n != 0),
+			Arrays.stream(numArray).boxed().filter(n -> n == 0)
+	).mapToInt(Integer::intValue).toArray();
+
+	System.out.println("100. Move Zeroes to the end (as array): " + Arrays.toString(movedZeroesArray));
+
+	
+	// Find Second highest Salary 
+	
+	Optional<Employee> sal = employees.stream()
+				.sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+				.peek(System.out::println)
+				.distinct()
+				.skip(1)
+				.findFirst();
+	
+	System.out.println(sal);
+				
+	// Method Ends here
 	}
 
 }
