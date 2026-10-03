@@ -308,18 +308,6 @@ System.out.println(" 89. Find all employee names appearing more than once: " + n
 	).mapToInt(Integer::intValue).toArray();
 
 	System.out.println("100. Move Zeroes to the end (as array): " + Arrays.toString(movedZeroesArray));
-
-	
-	// Find Second highest Salary 
-	
-	Optional<Employee> sal = employees.stream()
-				.sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
-				.peek(System.out::println)
-				.distinct()
-				.skip(1)
-				.findFirst();
-	
-	System.out.println(sal);
 				
 	// Method Ends here
 	}
